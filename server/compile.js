@@ -7,7 +7,8 @@ exports.compile_fonts = compile_fonts;
 
 async function compile_fonts() {
   const dir = "C:/Users/justi/dev/data/fonts";
-  const data = {};
+
+  const data = [];
   const name_index = {};
   const id_index = {};
 
@@ -21,16 +22,16 @@ async function compile_fonts() {
     } else if (item.isDirectory()){
       // parse directory
       const fontData = await parse_font_directory(path.join(dir,item.name));
-      for (const font in fontData){
-        name_index[fontData[font].name] = fontData[font]
-        id_index[fontData[font].id] = fontData[font]
-      }
-      data[fontName] = {
+      fontData.forEach(font => {
+        name_index[font.name] = font
+        id_index[font.id] = font
+      })
+      data.push({
         name: fontName,
         cid: uuid(),
         count: await countFiles(path.join(dir,item.name),['.ttf','.otf','.wof']),
         fonts: fontData,
-    }
+    })
   }
   }
   return {data,name_index,id_index};
@@ -44,32 +45,41 @@ async function overwrite(){
 }
 
 async function parse_font_directory(dir) {
-  const data = {};
+  const data = [];
   const isFont = filename => {
     let ext = path.extname(filename);
-    return ext === '.ttf' || ext === '.wof' || ext === '.otf'
+    return ext === '.ttf' || ext === '.woff' || ext === '.otf' || ext === '.woff2'
   }
   async function readdir_recursive(dir){
     const directory = await fs.readdir(dir,{withFileTypes:true});
+
     for (const item of directory){
       if (item.isFile() && isFont(item.name)){
-        const fontName = item.name.slice(0,-4);
+        const name = path.basename(item.name).split('.')[0];
+        const format = path.basename(item.name).split('.')[1];
         const id = uuid();
+        const filepath = path.join(item.path,item.name);
+        const size = Math.round((await fs.stat(path.join(item.path,item.name))).size / 1000);
         const font = {
           id,
-          name: fontName,
-          path: path.join(item.path,item.name),
-          type: item.name.slice(-4),
-          size: Math.round((await fs.stat(path.join(item.path,item.name))).size / 1000),
+          name,
+          filepath,
+          format,
+          size,
         };
-        data[fontName] = font;
+        data.push(font);
+        
       } else if (item.isDirectory()){
-        readdir_recursive(path.join(dir,item.name))
+        await readdir_recursive(path.join(dir,item.name))
       }
     }
   }
   await readdir_recursive(dir);
+    // if (dir.match(/aguila-thin/)){
+    //   console.log(data)
+    // }
   return data
+
 }
 
 overwrite();
