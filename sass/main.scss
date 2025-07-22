@@ -1,0 +1,16 @@
+.font-list {
+  display: flex;
+  flex-direction: column;
+}
+.card {
+  // background-color: black;
+  padding: 24px 10px;
+  display: inline-flex;
+  font-size: 48px;
+  transition: 200ms ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid #ccc;
+  }
+}
