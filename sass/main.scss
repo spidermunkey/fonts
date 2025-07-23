@@ -1,19 +1,27 @@
 .font-list {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
+
 .card {
   // background-color: black;
+  margin: 24px;
   padding: 24px 10px;
   display: inline-flex;
+  flex-direction: column;
   justify-content: space-between;
   transition: 200ms ease;
   border: 1px solid transparent;
   cursor: pointer;
-  text-transform: capitalize;
+  padding-left: 32px;
+  padding-bottom: 48px;
+  margin-right: 16px;
+  transition: 350ms ease;
+  border-radius: 24px;
+    border: 1px solid #e4e4e4;
 
   &:hover {
-    border: 1px solid #ccc;
       .font-controls > div,
       .font-data,
       .font-data .font-count,
@@ -22,18 +30,38 @@
         transform: translateY(0);
         transition: 400ms ease 100ms;
       }
+      .font-preview {
+        width: 100%;
+        opacity: 1;
+        transition: opacity 300ms ease 150ms, transform 250ms ease;;
+        transform: translateY(0);
+        &:after {
+          opacity: 0;
+        }
+      }
   }
   .font-content {
     display: flex;
-    width: 50%;
-    justify-content: space-between;
+    margin-left: 24px;
+    scale: .9;
+    opacity: .8;
+    flex: 1;
   }
   .font-name {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+  }
+  .font-preview {
     font-size: 36px;
     text-wrap: nowrap;
-    width: 50%;
     overflow: hidden;
     position: relative;
+    opacity: .5;
+    transition: opacity 150ms ease, transform 250ms ease;
     &:after {
       content: "";
       right: 0px;
@@ -57,13 +85,10 @@
     margin-right: 24px;
     margin-left: 48px;
     transition: 200ms ease;
-    opacity: 0;
-    transform: translateY(-8px);
     border: 1px solid #d2d2d2b6;
     border-radius: 12px;
     padding: 8px 16px;
     margin: 0 12px 0 12px;
-    height: fit-content;
   }
   .font-count {
     font-size: 16px;
@@ -80,16 +105,14 @@
   }
   .font-controls {
     display: inline-flex;
-
     & > div {
       transition: 200ms ease;
-      opacity: 0;
-      transform: translateY(-8px);
       border: 1px solid #ccccccb6;
       border-radius: 12px;
       padding: 8px 16px;
       margin: 0 12px 0 12px;
       height: fit-content;
+      opacity: .6;
     }
   }
 }

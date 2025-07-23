@@ -22,7 +22,6 @@ const Card = ({font}) => {
     <div className="card" style={{fontFamily:name}}>
       <div className="font-name">
        {font.name}
-      </div>
       <div className="font-content">
         <div className="font-data">
           <div className="font-count">{count}</div>
@@ -35,6 +34,11 @@ const Card = ({font}) => {
         </div>
 
       </div>
+      </div>
+      <div className="font-preview">
+        Some random text to preview the font
+      </div>
+
     </div>
   )
 }
