@@ -6,6 +6,8 @@ import { createRoot } from 'react-dom/client'
 const Card = ({font}) => {
   const defaultFont = font.fonts[0];
   const name = defaultFont.name;
+  const count = font.count;
+  console.log(font)
   useEffect(() => {
     const getData = async () => {
       const testResponse = await fetch(`/api/fonts?name=${name}`)
@@ -17,7 +19,23 @@ const Card = ({font}) => {
     getData()
   },[])
   return(
-    <div className="card" style={{fontFamily:name}}>{font.name}</div>
+    <div className="card" style={{fontFamily:name}}>
+      <div className="font-name">
+       {font.name}
+      </div>
+      <div className="font-content">
+        <div className="font-data">
+          <div className="font-count">{count}</div>
+          <div className="font-format">{defaultFont.format}</div>
+        </div>
+        <div className="font-controls">
+          <div className="btn-save">save</div>
+          <div className="btn-export">export</div>
+          <div className="btn-edit">edit</div>
+        </div>
+
+      </div>
+    </div>
   )
 }
 
