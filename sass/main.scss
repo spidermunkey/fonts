@@ -1,3 +1,4 @@
+@forward 'header';
 .font-list {
   display: flex;
   flex-direction: column;
@@ -5,7 +6,6 @@
 }
 
 .card {
-  // background-color: black;
   margin: 24px;
   padding: 24px 10px;
   display: inline-flex;
@@ -19,7 +19,7 @@
   margin-right: 16px;
   transition: 350ms ease;
   border-radius: 24px;
-    border: 1px solid #e4e4e4;
+  border: 1px solid #e4e4e4;
 
   &:hover {
       .font-controls > div,
@@ -33,7 +33,7 @@
       .font-preview {
         width: 100%;
         opacity: 1;
-        transition: opacity 300ms ease 150ms, transform 250ms ease;;
+        transition: opacity 300ms ease 150ms, transform 250ms ease;
         transform: translateY(0);
         &:after {
           opacity: 0;
