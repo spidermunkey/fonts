@@ -3,13 +3,41 @@ import '../sass/main.scss'
 import { StrictMode,useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
-const FontList = () => {
-    const [fontData,updateFontData] = useState([])
+const load = async font => {
+    const defaultFont = font.fonts[0];
+    console.log(defaultFont,font)
+    try {
+      const name = defaultFont.name;
+      const testResponse = await fetch(`/api/fonts?name=${name}`)
+      const buffer = await testResponse.arrayBuffer();
+      const Font = new FontFace(name,buffer);
+      await Font.load();
+      document.fonts.add(Font);
+      return testResponse;
+    } catch(e){
+      console.warn('error loading font data \n', font,'\n',e);
+      return null;
+    }
 
+}
+
+const FontListPending = () => {
+  return(
+    <div className="font-list-pending">
+      ...loading fonts
+    </div>
+  )
+}
+const FontList = () => {
+  const [fontData,updateFontData] = useState([])
+  const [isLoading,setIsLoading] = useState(true);
   useEffect(() => {
     const getData = async () => {
       const testResponse = await fetch('/api/fonts')
-      updateFontData(await testResponse.json()) 
+      const data = await testResponse.json()
+      const defaultLoaded = await Promise.all(data.map(load))
+      setIsLoading(false)
+      updateFontData(data)
     }
     getData();
   },[])
@@ -18,7 +46,8 @@ const FontList = () => {
         <div className="font-list-header">
           {/* search / filter */}
         </div>
-        {fontData.length > 0 && fontData.map(font => {
+        
+        {isLoading ? <FontListPending/>: fontData.length > 0 && fontData.map(font => {
           if (font.fonts.length > 0) {
             return <Card font={font}/>
           }
@@ -32,17 +61,6 @@ const Card = ({font}) => {
   const defaultFont = font.fonts[0];
   const name = defaultFont.name;
   const count = font.count;
-  console.log(font)
-  useEffect(() => {
-    const getData = async () => {
-      const testResponse = await fetch(`/api/fonts?name=${name}`)
-      const buffer = await testResponse.arrayBuffer();
-      const Font = new FontFace(name,buffer);
-      await Font.load();
-      document.fonts.add(Font);
-    }
-    getData()
-  },[])
   return(
     <div className="card" style={{fontFamily:name}}>
       <div className="font-name">
@@ -57,7 +75,6 @@ const Card = ({font}) => {
           <div className="btn-export">export</div>
           <div className="btn-edit">edit</div>
         </div>
-
       </div>
       </div>
       <div className="font-preview">
@@ -120,6 +137,6 @@ const App = () => {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App/>
-    </StrictMode>
+  <App/>
+  </StrictMode>
 )

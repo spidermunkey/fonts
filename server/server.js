@@ -12,9 +12,13 @@ app.get('/fonts', async function(request,response){
     const font = data[name];
     console.log(name)
     console.log(font)
-    const path = font.filepath;
-    const readStream = fs.createReadStream(path);
-    readStream.pipe(response);
+    if (font) {
+      const path = font.filepath;
+      const readStream = fs.createReadStream(path);
+      readStream.pipe(response);
+    } else {
+      response.json(data);
+    }
   }
   else if (id){
     const data = await JSON.parse(await fs.readFile('C:/Users/justi/dev/projects/fonts/server/data/id_index.json'))

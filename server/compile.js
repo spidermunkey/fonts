@@ -15,7 +15,7 @@ async function compile_fonts() {
   const folders = await fs.readdir(dir,{withFileTypes:true});
   for (const item of folders){
     const name = item.name;
-    const fontName = name.split(/[_\-]/).join(' ');
+    const fontName = name.split(/[_-]/).join(' ');
     if (item.isFile()){
       // single file
 
