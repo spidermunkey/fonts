@@ -3,6 +3,15 @@ import '../sass/main.scss'
 import { StrictMode,useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 
+const copy = font => 
+  window.navigator.clipboard.writeText(`@font-face {
+      font-family: "${font.name}";
+      src: 
+        local("${font.name}"),
+        url("${font.filepath }") format("${font.format}")
+  }`)
+  
+const loadFonts = fonts => Promise.all(fonts.map(load))
 const load = async font => {
     const defaultFont = font.fonts[0];
     console.log(defaultFont,font)
@@ -21,6 +30,13 @@ const load = async font => {
 
 }
 
+const getData = async () => {
+  const testResponse = await fetch('/api/fonts')
+  const data = await testResponse.json()
+  return data;
+}
+
+
 const FontListPending = () => {
   return(
     <div className="font-list-pending">
@@ -32,14 +48,13 @@ const FontList = () => {
   const [fontData,updateFontData] = useState([])
   const [isLoading,setIsLoading] = useState(true);
   useEffect(() => {
-    const getData = async () => {
-      const testResponse = await fetch('/api/fonts')
-      const data = await testResponse.json()
-      const defaultLoaded = await Promise.all(data.map(load))
+    const update = async () => {
+      const data = await getData();
+      await loadFonts(data);
       setIsLoading(false)
       updateFontData(data)
     }
-    getData();
+    update();
   },[])
   return (
       <div className="font-list">
@@ -61,6 +76,15 @@ const Card = ({font}) => {
   const defaultFont = font.fonts[0];
   const name = defaultFont.name;
   const count = font.count;
+  const copyFontFace = (font) => {
+    const css = `@font-face {
+      font-family: "${name}";
+      src: 
+        local("${name}"),
+        url("${defaultFont.filepath }") format("${defaultFont.format}")
+    }`
+    console.log(css)
+  }
   return(
     <div className="card" style={{fontFamily:name}}>
       <div className="font-name">
@@ -72,7 +96,7 @@ const Card = ({font}) => {
         </div>
         <div className="font-controls">
           <div className="btn-save">save</div>
-          <div className="btn-export">export</div>
+          <div className="btn-copy" onClick={copy.bind(this,defaultFont)}>copy</div>
           <div className="btn-edit">edit</div>
         </div>
       </div>
