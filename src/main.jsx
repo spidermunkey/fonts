@@ -44,9 +44,12 @@ const FontListPending = () => {
     </div>
   )
 }
-const FontList = () => {
-  const [fontData,updateFontData] = useState([])
-  const [isLoading,setIsLoading] = useState(true);
+const FontList = ({data}) => {
+  const [fontData,updateFontData] = useState([]);
+  const [isLoading,setIsLoading] = useState((!!data));
+  const [currentFont,setCurrentFont] = useState({});
+  const [previewActive,setPreviewActive] = useState(false);
+
   useEffect(() => {
     const update = async () => {
       const data = await getData();
@@ -54,25 +57,51 @@ const FontList = () => {
       setIsLoading(false)
       updateFontData(data)
     }
-    update();
-  },[])
+    if (!data || isLoading === true)
+      update();
+    else {
+      console.log(data)
+      loadFonts(data)
+      setIsLoading(false)
+      updateFontData(data)
+    }
+  },[data])
   return (
       <div className="font-list">
+        <FontPreview font={currentFont} active={previewActive} setActive={setPreviewActive}/>
+
         <div className="font-list-header">
+
           {/* search / filter */}
         </div>
-        
-        {isLoading ? <FontListPending/>: fontData.length > 0 && fontData.map(font => {
-          if (font.fonts.length > 0) {
-            return <Card font={font}/>
-          }
-          else return false
-        })}
+        <div className="font-list-items">
+          {isLoading ? <FontListPending/>: fontData.length > 0 && fontData.map(font => {
+            if (font.fonts.length > 0) {
+              return <Card font={font} handleClick={() => {
+                console.log('yo')
+                setCurrentFont(font);
+                setPreviewActive(true);
+              }}/>
+            }
+            else return false
+          })}
+        </div>
+
       </div>
 
   )
 }
-const Card = ({font}) => {
+const FontPreview = ({font,active,setActive}) => {
+  return(
+    <div className={["fs-preview",active ? 'active' : false].filter(Boolean).join(' ')}>
+      <div className="close" onClick={() => setActive(false)}>close</div>
+      <div className="content">
+        {font.name}
+      </div>
+    </div>
+  )
+}
+const Card = ({font,handleClick}) => {
   const defaultFont = font.fonts[0];
   const name = defaultFont.name;
   const count = font.count;
@@ -86,7 +115,7 @@ const Card = ({font}) => {
     console.log(css)
   }
   return(
-    <div className="card" style={{fontFamily:name}}>
+    <div className="card" style={{fontFamily:name}} onClick={handleClick}>
       <div className="font-name">
        {font.name}
       <div className="font-content">
@@ -143,7 +172,6 @@ const Header = () => {
 }
 const App = () => {
   const [fontData,updateFontData] = useState([])
-
   useEffect(() => {
     const getData = async () => {
       const testResponse = await fetch('/api/fonts')
@@ -151,16 +179,16 @@ const App = () => {
     }
     getData();
   },[])
-  return (
-    <div className="app">
-      <Header/>
-      <FontList/>
-    </div>
-  )
+  return (<>
+  <div className="app">
+    <Header/>
+    <FontList data={fontData}/>
+  </div>
+  </>)
 }
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-  <App/>
+    <App/>
   </StrictMode>
 )

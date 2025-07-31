@@ -2,6 +2,12 @@
 
 $font-clr-light: rgba(20, 20, 21, .9);
 $border-light: rgba(128, 128, 128, 0.1771);
+@font-face {
+      font-family: "Azonix";
+      src: 
+        local("Azonix"),
+        url("C:\Users\justi\dev\data\fonts\azonix\Azonix.otf") format("otf")
+}
 
 .dashboard-header {
   display: flex;
@@ -11,7 +17,7 @@ $border-light: rgba(128, 128, 128, 0.1771);
   padding-right: 64px;
   padding-left: 24px;
   color:$font-clr-light;
-
+  margin-top: 24px;
   .btn-filter,
   .btn-cancel {
     border: 1px solid rgba(128, 128, 128, 0.1771);
