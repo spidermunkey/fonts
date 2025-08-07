@@ -17,13 +17,14 @@ const load = async font => {
     console.log(defaultFont,font)
     try {
       const name = defaultFont.name;
-      const testResponse = await fetch(`/api/fonts?name=${name}`)
+      const testResponse = await fetch(`/fonts/font/${name}`)
       const buffer = await testResponse.arrayBuffer();
       const Font = new FontFace(name,buffer);
       await Font.load();
       document.fonts.add(Font);
       return testResponse;
     } catch(e){
+      console.log(defaultFont)
       console.warn('error loading font data \n', font,'\n',e);
       return null;
     }
@@ -31,7 +32,7 @@ const load = async font => {
 }
 
 const getData = async () => {
-  const testResponse = await fetch('/api/fonts')
+  const testResponse = await fetch('/fonts/meta')
   const data = await testResponse.json()
   return data;
 }
@@ -174,7 +175,7 @@ const App = () => {
   const [fontData,updateFontData] = useState([])
   useEffect(() => {
     const getData = async () => {
-      const testResponse = await fetch('/api/fonts')
+      const testResponse = await fetch('/fonts/meta')
       updateFontData(await testResponse.json()) 
     }
     getData();

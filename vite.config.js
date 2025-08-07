@@ -4,16 +4,22 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/fonts/',
+
   plugins: [
     tailwindcss(),
     react()
   ],
+  build: {
+    outDir: path.resolve(__dirname,'../../project-server/public/fonts'),
+    emptyOutDir: true,
+  },
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:1280',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, '/fonts'),
       }
     }
   },
